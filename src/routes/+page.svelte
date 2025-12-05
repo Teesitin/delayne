@@ -38,15 +38,15 @@
 
     const aboutMe: Media[] = [
         { url: "https://delayne.b-cdn.net/assets-organized/about/Playing%20Virtual%20Tennis%20Outdoors.jpg", alt: "Playing virtual tennis outdoors" },
-        { url: "https://delayne.b-cdn.net/assets-organized/about/Screenshot%202025-11-10%20185106.png", alt: "Right in the chest" },
+        // { url: "https://delayne.b-cdn.net/assets-organized/about/Screenshot%202025-11-10%20185106.png", alt: "Right in the chest" },
         { url: "https://delayne.b-cdn.net/assets-organized/about/I%20don't%20know%20who%20these%20people%20are_.jpg", alt: "My mother and I" },
         { url: "https://delayne.b-cdn.net/assets-organized/about/20250202_120532.jpg", alt: "Wrestling that gator" },
 
         // HOBBIES
-        { url: "https://delayne.b-cdn.net/assets-organized/hobbies/20230520_111240.jpg", alt: "Airsoft is a sport" },
+        // { url: "https://delayne.b-cdn.net/assets-organized/hobbies/20230520_111240.jpg", alt: "Airsoft is a sport" },
         { url: "https://delayne.b-cdn.net/assets-organized/hobbies/20241223_163859.jpg", alt: "Fixing my car" },
-        { url: "https://delayne.b-cdn.net/assets-organized/hobbies/IMG_20230923_165829.jpg", alt: "Fixing my car again" },
-        { url: "https://delayne.b-cdn.net/assets-organized/hobbies/20240719_185107.jpg", alt: "What isn't broken" },
+        // { url: "https://delayne.b-cdn.net/assets-organized/hobbies/IMG_20230923_165829.jpg", alt: "Fixing my car again" },
+        // { url: "https://delayne.b-cdn.net/assets-organized/hobbies/20240719_185107.jpg", alt: "What isn't broken" },
         { url: "https://delayne.b-cdn.net/assets-organized/hobbies/IMG_20240419_182545.jpg", alt: "It just keeps happening" },
         { url: "https://delayne.b-cdn.net/assets-organized/hobbies/20220928_091056.jpg", alt: "Modern-day mining" },
         { url: "https://delayne.b-cdn.net/assets-organized/hobbies/20150615_194544.jpg", alt: "Taking apart the MacBook" },
