@@ -7,9 +7,7 @@
 </script>
 
 <button
-	class="fixed top-4 right-4 z-10 w-12 h-12 flex items-center justify-center rounded-full shadow-md 
-	       bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 
-	       border border-gray-300 dark:border-gray-700 hover:scale-110 transition"
+	class="fixed right-4 top-4 z-40 flex h-12 w-12 items-center justify-center rounded-full border border-neutral-200 bg-white/85 text-neutral-900 shadow-lg shadow-black/10 backdrop-blur-xl transition duration-500 hover:-translate-y-1 hover:scale-105 dark:border-white/10 dark:bg-neutral-950/80 dark:text-neutral-100"
 	on:click={toggleTheme}
 	aria-label="Toggle theme"
 >

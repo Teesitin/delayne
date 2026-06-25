@@ -12,18 +12,18 @@
 
 		if (savedTheme === 'dark' || savedTheme === 'light') {
 			theme.set(savedTheme);
-		} else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-			theme.set('dark');
 		} else {
-			theme.set('light');
+			theme.set('dark');
 		}
 
 		document.documentElement.classList.toggle('dark', $theme === 'dark');
 
-		theme.subscribe((value) => {
+		const unsubscribe = theme.subscribe((value) => {
 			localStorage.setItem('theme', value);
 			document.documentElement.classList.toggle('dark', value === 'dark');
 		});
+
+		return unsubscribe;
 	});
 
 	let { children } = $props();
