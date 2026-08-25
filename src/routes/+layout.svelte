@@ -10,11 +10,7 @@
 	onMount(() => {
 		const savedTheme = localStorage.getItem('theme');
 
-		if (savedTheme === 'dark' || savedTheme === 'light') {
-			theme.set(savedTheme);
-		} else {
-			theme.set('dark');
-		}
+		theme.set(savedTheme === 'dark' ? 'dark' : 'light');
 
 		document.documentElement.classList.toggle('dark', $theme === 'dark');
 

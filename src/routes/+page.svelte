@@ -62,9 +62,9 @@
     ];
 
     const highlights = [
-        { stat: "5+", label: "years building web, game, and hardware projects" },
-        { stat: "3", label: "main lanes: SvelteKit, Unreal Engine, embedded systems" },
-        { stat: "1:1", label: "tutoring and build sessions tailored to the person" },
+        { stat: "7+", label: "years building software and technical projects" },
+        { stat: "Full-stack + embedded", label: "software, hardware, and interactive systems" },
+        { stat: "Fall 2026", label: "B.S. Computer Engineering at UCF" },
     ];
 
     const services = [
@@ -216,19 +216,29 @@
 </script>
 
 <svelte:head>
-    <title>DeLayne Russell | Software Engineer, Tutor, Creator</title>
+    <title>DeLayne Russell | Software Engineer & Computer Engineering Candidate</title>
     <meta
         name="description"
-        content="Portfolio for DeLayne Russell, a software engineer, tutor, and creator building SvelteKit sites, Unreal Engine projects, dashboards, and embedded systems."
+        content="Portfolio for DeLayne Russell, a software engineer and UCF Computer Engineering candidate building web applications, interactive systems, and embedded projects."
     />
+    <meta property="og:title" content="DeLayne Russell | Software Engineer" />
+    <meta property="og:description" content="Full-stack software, interactive systems, and embedded engineering." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://delayne.dev/" />
+    <meta property="og:image" content="https://delayne.dev/og.png" />
+    <meta property="og:image:alt" content="DeLayne Russell, Software Engineer and Computer Engineering Candidate" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="DeLayne Russell | Software Engineer" />
+    <meta name="twitter:description" content="Full-stack software, interactive systems, and embedded engineering." />
+    <meta name="twitter:image" content="https://delayne.dev/og.png" />
 </svelte:head>
 
-<main class="min-h-screen overflow-hidden bg-neutral-50 text-neutral-950 dark:bg-neutral-950 dark:text-neutral-100 transition-all duration-500">
-    <nav aria-label="Main navigation" class="fixed inset-x-4 bottom-4 z-40 flex items-center justify-center gap-1 rounded-full border border-neutral-200/70 bg-white/80 p-1 text-xs font-medium text-neutral-700 shadow-lg shadow-black/5 backdrop-blur-xl dark:border-white/10 dark:bg-neutral-950/70 dark:text-neutral-200 sm:text-sm md:inset-x-auto md:bottom-auto md:left-1/2 md:top-4 md:-translate-x-1/2">
+<main class="min-h-screen overflow-hidden bg-white text-neutral-950 dark:bg-neutral-950 dark:text-neutral-100 transition-all duration-500">
+    <nav aria-label="Main navigation" class="fixed inset-x-3 bottom-3 z-40 flex items-center justify-center gap-1 rounded-full border border-neutral-200/70 bg-white/90 p-2 text-sm font-semibold text-neutral-700 shadow-xl shadow-black/10 backdrop-blur-xl dark:border-white/10 dark:bg-neutral-950/85 dark:text-neutral-200 md:inset-x-auto md:bottom-auto md:left-1/2 md:top-4 md:-translate-x-1/2 md:p-1 md:font-medium md:shadow-lg md:shadow-black/5">
         {#each quickLinks as link}
             <a
                 href="{link.href}"
-                class="rounded-full px-3 py-2 hover:bg-neutral-950 hover:text-white dark:hover:bg-white dark:hover:text-neutral-950 sm:px-4"
+                class="flex min-h-12 flex-1 items-center justify-center rounded-full px-2 py-3 hover:bg-neutral-950 hover:text-white dark:hover:bg-white dark:hover:text-neutral-950 md:min-h-0 md:flex-none md:px-4 md:py-2"
             >
                 {link.label}
             </a>
@@ -236,14 +246,14 @@
     </nav>
 
     <section class="relative isolate px-4 pb-10 pt-24 sm:px-6 lg:px-8 lg:pb-12 lg:pt-28 transition-all duration-500">
-        <div class="absolute inset-0 -z-10 bg-[linear-gradient(135deg,#fff7ed_0%,#f8fafc_48%,#ecfeff_100%)] dark:bg-[linear-gradient(135deg,#171717_0%,#0a0a0a_52%,#111827_100%)] transition-all duration-500"></div>
-        <div class="absolute inset-x-0 bottom-0 -z-10 h-32 bg-linear-to-t from-neutral-50 to-transparent dark:from-neutral-950 transition-all duration-500"></div>
+        <div class="absolute inset-0 -z-10 bg-white dark:bg-neutral-950 transition-all duration-500"></div>
+        <div class="absolute inset-x-0 bottom-0 -z-10 h-32 bg-linear-to-t from-white to-transparent dark:from-neutral-950 transition-all duration-500"></div>
 
         <div class="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
             <div class="text-left">
                 <div class="inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-4 py-2 text-sm font-semibold text-emerald-700 shadow-sm dark:text-emerald-300">
                     <span class="h-2 w-2 rounded-full bg-emerald-400 motion-safe:animate-pulse"></span>
-                    Available for builds, tutoring, and problem-solving
+                    Open to software and computer engineering opportunities
                 </div>
 
                 <h1 class="mt-7 max-w-4xl text-5xl font-black leading-[0.95] tracking-normal text-neutral-950 dark:text-white sm:text-6xl lg:text-7xl">
@@ -251,11 +261,11 @@
                 </h1>
 
                 <p class="mt-6 max-w-2xl text-xl font-semibold leading-relaxed text-neutral-700 dark:text-neutral-300 sm:text-2xl">
-                    Software engineer, tutor, and creator building useful web tools, VR experiences, dashboards, and hardware-backed experiments.
+                    Software engineer and computer engineering candidate building practical web, interactive, and embedded systems.
                 </p>
 
                 <p class="mt-5 max-w-2xl text-base leading-8 text-neutral-600 dark:text-neutral-400 sm:text-lg">
-                    I help clients and students move from fuzzy ideas to working systems through hands-on sessions, clean interfaces, and practical engineering. Based in Orlando, working remotely with people worldwide.
+                    Based in Orlando, I turn ideas into clear, working products through practical engineering and thoughtful interfaces.
                 </p>
 
                 <div class="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -268,7 +278,7 @@
                     </a>
 
                     <a
-                        href="mailto:delayne.tas@gmail.com"
+                        href="mailto:delayne.russell99@gmail.com"
                         class="inline-flex items-center justify-center rounded-full border border-neutral-300 bg-white/70 px-6 py-3 text-sm font-bold text-neutral-900 shadow-sm backdrop-blur transition duration-500 hover:-translate-y-1 hover:border-cyan-400 hover:text-cyan-700 dark:border-white/15 dark:bg-white/5 dark:text-white dark:hover:border-cyan-300 dark:hover:text-cyan-200"
                     >
                         Start a Conversation
@@ -308,15 +318,12 @@
 
     <section class="px-4 py-16 sm:px-6 lg:px-8" id="work">
         <div class="mx-auto max-w-7xl">
-            <div class="flex flex-col justify-between gap-5 md:flex-row md:items-end">
-                <div>
-                    <p class="text-sm font-bold uppercase tracking-[0.3em] text-red-500">Selected Work</p>
-                    <h2 class="mt-3 text-4xl font-black text-neutral-950 dark:text-white sm:text-5xl">
-                        Screenshots with range.
-                    </h2>
-                </div>
-
-                <p class="max-w-xl text-base leading-8 text-neutral-600 dark:text-neutral-400">
+            <div class="max-w-3xl">
+                <p class="text-sm font-bold uppercase tracking-[0.3em] text-red-500">Selected Work</p>
+                <h2 class="mt-3 text-4xl font-black text-neutral-950 dark:text-white sm:text-5xl">
+                    Screenshots with range.
+                </h2>
+                <p class="mt-5 max-w-xl text-base leading-8 text-neutral-600 dark:text-neutral-400">
                     A tighter first look at game systems, dashboards, PCB work, and client-facing interfaces. Tap any image to open it larger.
                 </p>
             </div>
@@ -495,10 +502,10 @@
 
             <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
                 <a
-                    href="mailto:delayne.tas@gmail.com"
+                    href="mailto:delayne.russell99@gmail.com"
                     class="inline-flex items-center justify-center rounded-full bg-red-500 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-red-500/25 transition duration-500 hover:-translate-y-1 hover:bg-red-400"
                 >
-                    delayne.tas@gmail.com
+                    delayne.russell99@gmail.com
                 </a>
 
                 <a
