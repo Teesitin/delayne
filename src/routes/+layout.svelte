@@ -1,25 +1,50 @@
 <script lang="ts">
-	import '../app.css';
+	import 'tailwindcss/index.css';
 	import favicon from '$lib/assets/favicon.svg';
-    import LightBox from '$lib/components/lightbox/LightBox.svelte';
-    import ThemeToggle from '$lib/components/theme/ThemeToggle.svelte';
-    import { onMount } from 'svelte';
-    import { theme } from '$lib/components/theme/themeStore';
-	
-	// Watch for Theme
+	import LightBox from '$lib/components/lightbox/LightBox.svelte';
+	import { onMount } from 'svelte';
+	import { get } from 'svelte/store';
+	import { parseTheme, theme, themeStorageKey, type ThemePreference } from '$lib/components/theme/themeStore';
+
 	onMount(() => {
-		const savedTheme = localStorage.getItem('theme');
+		const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
 
-		theme.set(savedTheme === 'dark' ? 'dark' : 'light');
+		try {
+			theme.set(parseTheme(localStorage.getItem(themeStorageKey)));
+		} catch {
+			theme.set('system');
+		}
 
-		document.documentElement.classList.toggle('dark', $theme === 'dark');
+		function applyTheme(preference: ThemePreference) {
+			const dark = preference === 'dark' || (preference === 'system' && systemTheme.matches);
+			document.documentElement.classList.toggle('dark', dark);
+		}
 
 		const unsubscribe = theme.subscribe((value) => {
-			localStorage.setItem('theme', value);
-			document.documentElement.classList.toggle('dark', value === 'dark');
+			try {
+				localStorage.setItem(themeStorageKey, value);
+			} catch {}
+			applyTheme(value);
 		});
 
-		return unsubscribe;
+		function syncSystemTheme() {
+			applyTheme(get(theme));
+		}
+
+		function syncStoredTheme(event: StorageEvent) {
+			if (event.key === themeStorageKey || event.key === null) {
+				theme.set(parseTheme(event.newValue));
+			}
+		}
+
+		systemTheme.addEventListener('change', syncSystemTheme);
+		window.addEventListener('storage', syncStoredTheme);
+
+		return () => {
+			unsubscribe();
+			systemTheme.removeEventListener('change', syncSystemTheme);
+			window.removeEventListener('storage', syncStoredTheme);
+		};
 	});
 
 	let { children } = $props();
@@ -31,6 +56,4 @@
 
 {@render children?.()}
 
-<LightBox/>
-
-<ThemeToggle/>
+<LightBox />

@@ -8,6 +8,12 @@ node_modules
 /.svelte-kit
 /build
 
+# Temporary scripts, audits, and generated working files
+/tmp/
+/temp/
+*.tmp
+*.log
+
 # OS
 .DS_Store
 Thumbs.db

@@ -1,520 +1,169 @@
 <script lang="ts">
-    import { lightboxMedia } from "$lib/components/lightbox/lightboxStore";
+    import ThemeToggle from '$lib/components/theme/ThemeToggle.svelte';
+    import { categories, gallery, portrait, aboutImages } from '$lib/data/gallery';
+    import ImageCard from '$lib/components/portfolio/ImageCard.svelte';
+    import ProjectCard from '$lib/components/portfolio/ProjectCard.svelte';
+    import SectionHeading from '$lib/components/portfolio/SectionHeading.svelte';
+    import { projects } from '$lib/data/projects';
 
-    const bestWork: Media[] = [
-        // UNREAL ENGINE
-        { url: "https://delayne.b-cdn.net/assets-organized/projects/Screenshot%202025-11-10%20173910.png", alt: "UE5 Blueprints" },
-        { url: "https://delayne.b-cdn.net/assets-organized/projects/Screenshot%202025-11-10%20173758.png", alt: "UE5 Blueprints" },
-        { url: "https://delayne.b-cdn.net/assets-organized/projects/Screenshot%202025-11-10%20173345.png", alt: "UE5 Blueprints" },
-        { url: "https://delayne.b-cdn.net/assets-organized/projects/Screenshot%202025-11-10%20173714.png", alt: "UE5 Scene Development" },
+    const tabs = [{ id: 'all', label: 'All work' }, ...categories];
+    let activeCategory = $state('all');
+    let visibleCount = $state(12);
+    const filteredImages = $derived(activeCategory === 'all' ? gallery : gallery.filter((image) => image.category === activeCategory));
+    const visibleImages = $derived(filteredImages.slice(0, visibleCount));
 
-        // WEB UI
-        { url: "https://delayne.b-cdn.net/assets-organized/projects/Screenshot%202025-11-10%20181332.png", alt: "Dashboard UI" },
-        { url: "https://delayne.b-cdn.net/assets-organized/projects/Screenshot%202025-11-10%20181357.png", alt: "Web App UI" },
-        { url: "https://delayne.b-cdn.net/assets/Client%20and%20Payment%20Management%20Dashboard.png", alt: "SaaS Dashboard" },
-        { url: "https://delayne.b-cdn.net/assets-organized/projects/Screenshot%202025-04-04%20160609.png", alt: "SaaS Dashboard" },
+    function selectCategory(id: string) {
+        if (activeCategory === id) return;
+        activeCategory = id;
+        visibleCount = 12;
+    }
 
-        // PCB
-        { url: "https://delayne.b-cdn.net/assets/Microcontroller%20Circuit%20Diagram%20with%20LCD%20and%20Ultrasonic%20Sensor.png", alt: "PCB" },
-        { url: "https://delayne.b-cdn.net/assets/Screenshot%202025-05-12%20114852.png", alt: "PCB" },
-        { url: "https://delayne.b-cdn.net/assets/Screenshot%202025-05-12%20114948.png", alt: "PCB" },
-        { url: "https://delayne.b-cdn.net/assets/20250415_141848.jpg", alt: "PCB" },
+    function navigateTabs(event: KeyboardEvent, index: number) {
+        let next = index;
+        if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
+        else if (event.key === 'ArrowLeft') next = (index - 1 + tabs.length) % tabs.length;
+        else if (event.key === 'Home') next = 0;
+        else if (event.key === 'End') next = tabs.length - 1;
+        else return;
+        event.preventDefault();
+        selectCategory(tabs[next].id);
+        document.getElementById(`tab-${tabs[next].id}`)?.focus();
+    }
 
-        // MORE PCB
-        { url: "https://delayne.b-cdn.net/assets-organized/projects/Screenshot%202025-11-10%20165644.png", alt: "PCB" },
-        { url: "https://delayne.b-cdn.net/assets-organized/projects/Screenshot%202025-11-10%20165734.png", alt: "PCB" },
-        { url: "https://delayne.b-cdn.net/assets-organized/projects/Screenshot%202025-11-10%20165750.png", alt: "PCB" },
-        { url: "https://delayne.b-cdn.net/assets-organized/projects/Screenshot%202025-11-10%20165903.png", alt: "PCB" },
-        { url: "https://delayne.b-cdn.net/assets-organized/projects/Screenshot%202025-11-10%20165924.png", alt: "PCB" },
-        { url: "https://delayne.b-cdn.net/assets-organized/projects/Screenshot%202025-11-10%20170013.png", alt: "PCB" },
-        { url: "https://delayne.b-cdn.net/assets-organized/projects/Screenshot%202025-11-10%20170043.png", alt: "PCB" },
-        { url: "https://delayne.b-cdn.net/assets-organized/projects/Screenshot%202025-11-10%20170121.png", alt: "PCB" },
-        { url: "https://delayne.b-cdn.net/assets-organized/projects/Screenshot%202025-11-10%20170217.png", alt: "PCB" },
-        { url: "https://delayne.b-cdn.net/assets-organized/projects/Screenshot%202025-11-10%20170259.png", alt: "PCB" },
-        { url: "https://delayne.b-cdn.net/assets-organized/projects/Screenshot%202025-11-10%20170330.png", alt: "PCB" },
-        { url: "https://delayne.b-cdn.net/assets-organized/projects/Screenshot%202025-11-10%20170419.png", alt: "PCB" },
+    const skills = [
+        { title: 'Software development', tools: 'TypeScript, JavaScript, Python, SvelteKit, Node.js, PHP' },
+        { title: 'Platforms & workflows', tools: 'Firebase, Google Cloud, Git, API integrations, automation' },
+        { title: 'Interactive systems', tools: 'Unreal Engine, Blueprint visual scripting, SteamVR, Oculus VR' },
+        { title: 'Hardware & design', tools: 'MSP430, embedded systems, PCB design, Fusion 360, prototyping' }
     ];
-
-    const aboutMe: Media[] = [
-        { url: "https://delayne.b-cdn.net/assets-organized/about/Playing%20Virtual%20Tennis%20Outdoors.jpg", alt: "Playing virtual tennis outdoors" },
-        // { url: "https://delayne.b-cdn.net/assets-organized/about/I%20don't%20know%20who%20these%20people%20are_.jpg", alt: "My mother and I" },
-        { url: "https://delayne.b-cdn.net/assets-organized/about/20250202_120532.jpg", alt: "Wrestling that gator" },
-
-        // HOBBIES
-        // { url: "https://delayne.b-cdn.net/assets-organized/hobbies/20241223_163859.jpg", alt: "Fixing my car" },
-        { url: "https://delayne.b-cdn.net/assets-organized/hobbies/IMG_20240419_182545.jpg", alt: "It just keeps happening" },
-        // { url: "https://delayne.b-cdn.net/assets-organized/hobbies/20220928_091056.jpg", alt: "Modern-day mining" },
-        { url: "https://delayne.b-cdn.net/assets-organized/hobbies/20150615_194544.jpg", alt: "Taking apart the MacBook" },
-        { url: "https://delayne.b-cdn.net/assets-organized/hobbies/20241213_205115.jpg", alt: "Conquering the West" },
-        { url: "https://delayne.b-cdn.net/assets-organized/hobbies/IMG_20210119_181749.jpg", alt: "Learning the inner workings of a TV" },
-        { url: "https://delayne.b-cdn.net/assets-organized/hobbies/IMG_20230802_204140.jpg", alt: "Putting the brakes on the brakes" },
-
-        // SETUPS / PERSONAL LIFE
-        { url: "https://delayne.b-cdn.net/assets-organized/about/20221028_123951.jpg", alt: "My battlestation" },
-        { url: "https://delayne.b-cdn.net/assets-organized/about/20240711_100621.jpg", alt: "Freaky Freya" },
-    ];
-
-    const quickLinks = [
-        { label: "Work", href: "#work" },
-        { label: "Projects", href: "#projects" },
-        { label: "Tools", href: "#tools" },
-        { label: "Contact", href: "#contact" },
-    ];
-
-    const highlights = [
-        { stat: "7+", label: "years building software and technical projects" },
-        { stat: "Full-stack + embedded", label: "software, hardware, and interactive systems" },
-        { stat: "Fall 2026", label: "B.S. Computer Engineering at UCF" },
-    ];
-
-    const services = [
-        {
-            title: "Product Websites",
-            text: "Clean, fast SvelteKit and WordPress builds with thoughtful structure, useful content, and a finish that feels client-ready.",
-            accent: "from-red-500 to-orange-400",
-        },
-        {
-            title: "Interactive Systems",
-            text: "VR, Unreal Engine, dashboards, and workflow tools built around practical use instead of shiny dead ends.",
-            accent: "from-cyan-400 to-emerald-400",
-        },
-        {
-            title: "Technical Tutoring",
-            text: "Hands-on guidance for students and builders who want to understand the work, not just copy the steps.",
-            accent: "from-amber-300 to-lime-300",
-        },
-    ];
-
-    const projects = [
-        {
-            title: "Tutors & Services",
-            tag: "SvelteKit / Firebase / SaaS Platform",
-            text: "A full SaaS platform integrating authentication, invoicing, client management, tutor management, and automated workflows used by real contractors across the U.S.",
-            links: [
-                { label: "Visit Site", href: "https://www.tutorsandservices.com/" },
-            ],
-        },
-        {
-            title: "RDE-USA",
-            tag: "SvelteKit / Web Development",
-            text: "Responsive website with optimized SEO, smooth product pages, and clean layout hierarchy for industrial hardware manufacturing.",
-            links: [
-                { label: "Visit Site", href: "https://www.rde-usa.com/" },
-            ],
-        },
-        {
-            title: "VR Simulated EMS Response",
-            tag: "Unreal Engine / Virtual Reality / Education",
-            text: "A VR EMS field training module designed to teach real-world medical emergency response techniques through interactive simulation.",
-            links: [],
-            note: "Under NDA",
-        },
-        {
-            title: "Escape Room Experience",
-            tag: "SteamVR / Unreal Engine / Physics Sim",
-            text: "A room-scale VR escape experience linking physical movement to virtual spacecraft navigation with real-time environment tracking.",
-            links: [
-                { label: "View Demo", href: "https://delayne.b-cdn.net/assets-organized/videos/VID_20210523_170812.mp4" },
-            ],
-        },
-        {
-            title: "Accordios",
-            tag: "SaaS / SvelteKit / Business Automation",
-            text: "A business productivity and automation suite designed to streamline collaboration, scheduling, client onboarding, and communication workflows.",
-            links: [
-                { label: "View Site", href: "https://accordios.com/" },
-            ],
-        },
-        {
-            title: "Mind on AI",
-            tag: "SvelteKit / Survey Platform / Public Research",
-            text: "A public research platform studying how people understand and emotionally respond to emerging AI technology.",
-            links: [
-                { label: "View Site", href: "https://mind-on-ai-2.vercel.app/" },
-                { label: "View Project", href: "https://github.com/Teesitin/mind-on-ai-2" },
-            ],
-        },
-        {
-            title: "Pong Ping",
-            tag: "Unreal Engine / Blueprint Only / Steam Release",
-            text: "A simple arcade-style game built in Unreal Engine using Blueprints. Created to learn game production and publishing workflows on Steam.",
-            links: [
-                { label: "View on Steam", href: "https://store.steampowered.com/app/2252930/Pong_Ping/" },
-            ],
-        },
-        {
-            title: "Portfolio Website",
-            tag: "SvelteKit / Component Design / UI/UX",
-            text: "This site, built in SvelteKit, showcasing projects, UI design, animations, and technical work.",
-            links: [
-                { label: "View Site", href: "https://delayne.vercel.app/" },
-                { label: "View Project", href: "https://github.com/Teesitin/delayne" },
-            ],
-        },
-        {
-            title: "Visually Unique Arts",
-            tag: "WordPress / Small Business Website",
-            text: "A business website built for my father to showcase his services and establish an online presence.",
-            links: [
-                { label: "Visit Site", href: "https://dorranrussell.wordpress.com/" },
-            ],
-        },
-    ];
-
-    const software = [
-        // GAME DEVELOPMENT
-        "Unreal Engine 5",
-        "Blueprint Visual Scripting",
-        "Love2D",
-        "Oculus VR Developer Tools",
-
-        // WEB DEVELOPMENT
-        "SvelteKit",
-        "TailwindCSS",
-        "WordPress",
-        "Elementor",
-        "Node.js",
-        "PHP",
-        "Firebase",
-        "Google Cloud",
-        "Google Cloud Console",
-        "BunnyCDN",
-        "Telnyx",
-
-        // PROGRAMMING LANGUAGES
-        "JavaScript",
-        "TypeScript",
-        "Python",
-
-        // SOFTWARE & APPLICATIONS
-        "VS Code",
-        "Visual Studio",
-        "GitHub",
-        "Trello",
-        "Android Studio",
-        "Fusion 360",
-        "Affinity Photo",
-        "Photoshop",
-        "Figma",
-        "Canva",
-        "HandBrake",
-
-        // HARDWARE / ENGINEERING
-        "MSP430 Embedded Systems",
-        "Soldering and Prototyping",
-
-        // AUTOMATION & WORKFLOW
-        "Google Sheets",
-        "Apps Script",
-        "Google CLI",
-        "PowerShell",
-        "Google Ads"
-    ];
-
-    const featuredWork = bestWork.slice(0, 8);
-    const aboutPreview = aboutMe.slice(0, 4);
 </script>
 
 <svelte:head>
-    <title>DeLayne Russell | Software Engineer & Computer Engineering Candidate</title>
-    <meta
-        name="description"
-        content="Portfolio for DeLayne Russell, a software engineer and UCF Computer Engineering candidate building web applications, interactive systems, and embedded projects."
-    />
+    <title>DeLayne Russell | Software Engineer</title>
+    <meta name="description" content="DeLayne Russell is a software engineer and UCF Computer Engineering candidate in Orlando. Explore full-stack applications, interactive systems, and embedded engineering projects." />
     <meta property="og:title" content="DeLayne Russell | Software Engineer" />
-    <meta property="og:description" content="Full-stack software, interactive systems, and embedded engineering." />
+    <meta property="og:description" content="Full-stack software, interactive systems, and embedded engineering. Based in Orlando, Florida." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://delayne.dev/" />
-    <meta property="og:image" content="https://delayne.dev/og.png" />
+    <meta property="og:image" content="https://delayne.b-cdn.net/master/about/delayne-russell-professional-headshot.png" />
     <meta property="og:image:alt" content="DeLayne Russell, Software Engineer and Computer Engineering Candidate" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="DeLayne Russell | Software Engineer" />
     <meta name="twitter:description" content="Full-stack software, interactive systems, and embedded engineering." />
-    <meta name="twitter:image" content="https://delayne.dev/og.png" />
+    <meta name="twitter:image" content="https://delayne.b-cdn.net/master/about/delayne-russell-professional-headshot.png" />
+    <link rel="preconnect" href="https://delayne.b-cdn.net" />
 </svelte:head>
 
-<main class="min-h-screen overflow-hidden bg-white text-neutral-950 dark:bg-neutral-950 dark:text-neutral-100 transition-all duration-500">
-    <nav aria-label="Main navigation" class="fixed inset-x-3 bottom-3 z-40 flex items-center justify-center gap-1 rounded-full border border-neutral-200/70 bg-white/90 p-2 text-sm font-semibold text-neutral-700 shadow-xl shadow-black/10 backdrop-blur-xl dark:border-white/10 dark:bg-neutral-950/85 dark:text-neutral-200 md:inset-x-auto md:bottom-auto md:left-1/2 md:top-4 md:-translate-x-1/2 md:p-1 md:font-medium md:shadow-lg md:shadow-black/5">
-        {#each quickLinks as link}
-            <a
-                href="{link.href}"
-                class="flex min-h-12 flex-1 items-center justify-center rounded-full px-2 py-3 hover:bg-neutral-950 hover:text-white dark:hover:bg-white dark:hover:text-neutral-950 md:min-h-0 md:flex-none md:px-4 md:py-2"
-            >
-                {link.label}
-            </a>
-        {/each}
-    </nav>
+<a class="fixed -top-[100px] left-4 z-100 border border-[#dde2e8] bg-white px-[18px] py-3 focus:top-3 [.dark_&]:border-[#303947] [.dark_&]:bg-[#11151b]" href="#main-content">Skip to content</a>
+<header class="border-b border-[#dde2e8] [.dark_&]:border-[#303947]">
+    <div class="mx-auto w-[calc(100%-36px)] min-[701px]:w-[min(1160px,calc(100%-64px))] flex min-h-[86px] items-center gap-8 max-[700px]:flex-wrap max-[700px]:gap-4 max-[700px]:py-[15px]">
+        <a class="flex items-center gap-[13px] text-[21px] font-[650] tracking-[-0.06em] max-[700px]:mr-auto" href="#main-content" aria-label="DeLayne Russell, home">DR<span class="text-sm tracking-[-0.01em] max-[1000px]:hidden">DeLayne Russell</span></a>
+        <nav aria-label="Main navigation" class="ml-auto flex gap-[26px] text-sm text-[#566171] [.dark_&]:text-[#abb5c3] max-[700px]:order-3 max-[700px]:m-0 max-[700px]:w-full max-[700px]:justify-between max-[700px]:gap-4">
+            <a class="underline-offset-[5px] hover:text-[#244c77] hover:underline [.dark_&]:hover:text-[#a5c7ec] max-[700px]:py-1.5" href="#projects">Projects</a>
+            <a class="underline-offset-[5px] hover:text-[#244c77] hover:underline [.dark_&]:hover:text-[#a5c7ec] max-[700px]:py-1.5" href="#work">Gallery</a>
+            <a class="underline-offset-[5px] hover:text-[#244c77] hover:underline [.dark_&]:hover:text-[#a5c7ec] max-[700px]:py-1.5" href="#about">About</a>
+            <a class="underline-offset-[5px] hover:text-[#244c77] hover:underline [.dark_&]:hover:text-[#a5c7ec] max-[700px]:py-1.5" href="#contact">Contact</a>
+        </nav>
+        <ThemeToggle />
+    </div>
+</header>
 
-    <section class="relative isolate px-4 pb-10 pt-24 sm:px-6 lg:px-8 lg:pb-12 lg:pt-28 transition-all duration-500">
-        <div class="absolute inset-0 -z-10 bg-white dark:bg-neutral-950 transition-all duration-500"></div>
-        <div class="absolute inset-x-0 bottom-0 -z-10 h-32 bg-linear-to-t from-white to-transparent dark:from-neutral-950 transition-all duration-500"></div>
-
-        <div class="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
-            <div class="text-left">
-                <div class="inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-4 py-2 text-sm font-semibold text-emerald-700 shadow-sm dark:text-emerald-300">
-                    <span class="h-2 w-2 rounded-full bg-emerald-400 motion-safe:animate-pulse"></span>
-                    Open to software and computer engineering opportunities
-                </div>
-
-                <h1 class="mt-7 max-w-4xl text-5xl font-black leading-[0.95] tracking-normal text-neutral-950 dark:text-white sm:text-6xl lg:text-7xl">
-                    DeLayne Russell
-                </h1>
-
-                <p class="mt-6 max-w-2xl text-xl font-semibold leading-relaxed text-neutral-700 dark:text-neutral-300 sm:text-2xl">
-                    Software engineer and computer engineering candidate building practical web, interactive, and embedded systems.
-                </p>
-
-                <p class="mt-5 max-w-2xl text-base leading-8 text-neutral-600 dark:text-neutral-400 sm:text-lg">
-                    Based in Orlando, I turn ideas into clear, working products through practical engineering and thoughtful interfaces.
-                </p>
-
-                <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-                    <a
-                        href="#projects"
-                        class="group inline-flex items-center justify-center rounded-full bg-red-500 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-red-500/25 transition duration-500 hover:-translate-y-1 hover:bg-red-400 hover:shadow-red-500/40"
-                    >
-                        See Projects
-                        <span class="ml-2 transition duration-500 group-hover:translate-x-1">&rarr;</span>
-                    </a>
-
-                    <a
-                        href="mailto:delayne.russell99@gmail.com"
-                        class="inline-flex items-center justify-center rounded-full border border-neutral-300 bg-white/70 px-6 py-3 text-sm font-bold text-neutral-900 shadow-sm backdrop-blur transition duration-500 hover:-translate-y-1 hover:border-cyan-400 hover:text-cyan-700 dark:border-white/15 dark:bg-white/5 dark:text-white dark:hover:border-cyan-300 dark:hover:text-cyan-200"
-                    >
-                        Start a Conversation
-                    </a>
-                </div>
-
+<main id="main-content">
+    <section class="mx-auto w-[calc(100%-36px)] min-[701px]:w-[min(1160px,calc(100%-64px))] grid grid-cols-[minmax(0,1fr)_340px] items-center gap-[88px] pt-[76px] pb-16 max-[1000px]:grid-cols-[minmax(0,1fr)_280px] max-[1000px]:gap-10 max-[700px]:grid-cols-1 max-[700px]:gap-[30px] max-[700px]:py-[42px]" aria-labelledby="intro-title">
+        <div>
+            <p class="mb-[25px] flex items-center gap-2 text-[13px] text-[#566171] [.dark_&]:text-[#abb5c3]"><span class="size-[7px] rounded-full bg-[#427a60]"></span>Open to engineering opportunities</p>
+            <h1 class="text-[clamp(38px,4.6vw,58px)] leading-[1.08] font-[650] tracking-[-0.045em]" id="intro-title">DeLayne Russell</h1>
+            <p class="mt-5 text-[clamp(21px,2.1vw,27px)] leading-[1.4] font-[450] tracking-[-0.02em]">Software engineer.<br />Computer engineering candidate.</p>
+            <p class="mt-5 max-w-[590px] text-base leading-[1.8] text-[#566171] [.dark_&]:text-[#abb5c3] max-[700px]:text-[15px]">I build web applications, interactive experiences, and embedded systems. Based in Orlando, with experience delivering software for clients and bringing hardware projects from design to prototype.</p>
+            <div class="mt-7 flex flex-wrap items-center gap-3">
+                <a class="inline-flex min-h-11 items-center justify-center gap-[15px] rounded-[5px] border border-transparent px-[18px] py-[11px] text-sm font-[550] transition-colors duration-150 motion-reduce:transition-none bg-[#17212f] text-white hover:bg-[#244c77] [.dark_&]:bg-[#eef1f5] [.dark_&]:text-[#11151b] [.dark_&]:hover:bg-[#a5c7ec]" href="#projects">Explore my work <span aria-hidden="true">↗</span></a>
+                <a class="inline-flex min-h-11 items-center justify-center gap-[15px] rounded-[5px] border px-[18px] py-[11px] text-sm font-[550] transition-colors duration-150 motion-reduce:transition-none border-[#dde2e8] bg-white hover:border-[#566171] hover:bg-[#edf2f7] [.dark_&]:border-[#303947] [.dark_&]:bg-[#11151b] [.dark_&]:hover:border-[#abb5c3] [.dark_&]:hover:bg-[#222d3c]" href="mailto:delayne.russell99@gmail.com">Get in touch</a>
+                <a class="px-1.5 py-3 text-sm font-[550] text-[#244c77] underline-offset-4 hover:underline [.dark_&]:text-[#a5c7ec]" href="https://github.com/Teesitin" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
             </div>
+        </div>
+        <figure class="max-[700px]:w-[230px]">
+            <img class="block h-[340px] w-full rounded-[7px] object-cover max-[1000px]:h-[280px] max-[700px]:h-[230px]" src={portrait.url} width={portrait.width} height={portrait.height} alt="DeLayne Russell" fetchpriority="high" />
+            <figcaption class="mt-3.5 text-xs leading-[1.7] text-[#566171] [.dark_&]:text-[#abb5c3]">Orlando, Florida <span class="block">Software & computer engineering</span></figcaption>
+        </figure>
+    </section>
 
-            <div class="relative mx-auto w-full max-w-[430px]">
-                <div class="group relative rounded-lg border border-neutral-200 bg-white p-3 shadow-2xl shadow-black/10 transition duration-500 hover:-translate-y-2 dark:border-white/10 dark:bg-white/10 dark:shadow-black/40">
-                    <img
-                        src="https://delayne.b-cdn.net/assets/delayne-russell.jpg?width=1200&quality=90"
-                        alt="DeLayne Russell"
-                        class="aspect-4/5 w-full rounded-md object-cover transition duration-500 group-hover:scale-[1.02]"
-                    />
+    <div class="mx-auto w-[calc(100%-36px)] min-[701px]:w-[min(1160px,calc(100%-64px))] grid grid-cols-[1fr_1fr_1.3fr] border-y border-[#dde2e8] py-[27px] [.dark_&]:border-[#303947] max-[700px]:grid-cols-1 max-[700px]:gap-5">
+        <div class="flex flex-col gap-[7px] border-l border-[#dde2e8] px-7 first:border-l-0 first:pl-0 [.dark_&]:border-[#303947] max-[700px]:border-0 max-[700px]:p-0"><strong class="text-base font-semibold">7+ years</strong><span class="text-xs leading-[1.6] text-[#566171] [.dark_&]:text-[#abb5c3]">Building software and technical projects</span></div>
+        <div class="flex flex-col gap-[7px] border-l border-[#dde2e8] px-7 first:border-l-0 first:pl-0 [.dark_&]:border-[#303947] max-[700px]:border-0 max-[700px]:p-0"><strong class="text-base font-semibold">Full-stack & embedded</strong><span class="text-xs leading-[1.6] text-[#566171] [.dark_&]:text-[#abb5c3]">Experience across software and hardware</span></div>
+        <div class="flex flex-col gap-[7px] border-l border-[#dde2e8] px-7 first:border-l-0 first:pl-0 [.dark_&]:border-[#303947] max-[700px]:border-0 max-[700px]:p-0"><strong class="text-base font-semibold">University of Central Florida</strong><span class="text-xs leading-[1.6] text-[#566171] [.dark_&]:text-[#abb5c3]">B.S. Computer Engineering · Expected Fall 2026</span></div>
+    </div>
 
-                    <div class="absolute bottom-6 left-6 right-6 rounded-lg border border-white/20 bg-neutral-950/80 p-4 text-white shadow-xl backdrop-blur-md">
-                        <p class="text-sm font-semibold text-cyan-200">Current focus</p>
-                        <p class="mt-1 text-xl font-black">Practical software with a real human behind it.</p>
+    <section class="mx-auto w-[calc(100%-36px)] min-[701px]:w-[min(1160px,calc(100%-64px))] py-[76px] max-[700px]:py-[50px]" id="projects" aria-labelledby="projects-title">
+        <SectionHeading id="projects-title" eyebrow="Projects" title="Software built for real use." description="Client platforms, published games, and engineering projects. Explore the work and the technologies behind it." />
+        <div class="grid grid-cols-1 gap-[18px] min-[640px]:grid-cols-2 min-[1001px]:grid-cols-3">
+            {#each projects as project}
+                <ProjectCard {project} />
+            {/each}
+        </div>
+    </section>
+
+    <section class="border-y border-[#dde2e8] bg-[#f7f8fa] [.dark_&]:border-[#303947] [.dark_&]:bg-[#181e27] py-[76px] max-[700px]:py-[50px]" id="work" aria-labelledby="gallery-title">
+        <div class="mx-auto w-[calc(100%-36px)] min-[701px]:w-[min(1160px,calc(100%-64px))]">
+            <SectionHeading id="gallery-title" eyebrow="Gallery" title="A closer look at the work." description="Browse interfaces, prototypes, and development screenshots. Select an image to view it at full resolution." />
+            <div class="mb-[25px] flex flex-wrap gap-[7px]" role="tablist" aria-label="Filter project images">
+                {#each tabs as tab, index}
+                    <button class="flex min-h-11 items-center gap-[9px] rounded-[5px] border border-[#dde2e8] bg-transparent px-3.5 py-2.5 text-[13px] text-[#566171] transition-colors duration-150 hover:bg-[#edf2f7] aria-selected:border-[#17212f] aria-selected:bg-[#17212f] aria-selected:text-white motion-reduce:transition-none [.dark_&]:border-[#303947] [.dark_&]:text-[#abb5c3] [.dark_&]:hover:bg-[#222d3c] [.dark_&]:aria-selected:border-[#eef1f5] [.dark_&]:aria-selected:bg-[#eef1f5] [.dark_&]:aria-selected:text-[#11151b] max-[639px]:px-2.5 max-[639px]:py-[9px] max-[639px]:text-xs" type="button" role="tab" id={`tab-${tab.id}`} aria-selected={activeCategory === tab.id} aria-controls="gallery-panel" tabindex={activeCategory === tab.id ? 0 : -1} onclick={() => selectCategory(tab.id)} onkeydown={(event) => navigateTabs(event, index)}>
+                        {tab.label}<span class="text-[11px] opacity-80">{tab.id === 'all' ? gallery.length : gallery.filter((image) => image.category === tab.id).length}</span>
+                    </button>
+                {/each}
+            </div>
+            <div id="gallery-panel" role="tabpanel" aria-labelledby={`tab-${activeCategory}`} tabindex="0">
+                {#key activeCategory}
+                    <div class="grid grid-cols-1 gap-5 opacity-100 transition-opacity duration-180 ease-linear starting:opacity-0 motion-reduce:transition-none min-[640px]:grid-cols-2 min-[1001px]:grid-cols-3">
+                        {#each visibleImages as media (media.url)}
+                            <ImageCard {media} />
+                        {/each}
                     </div>
-                </div>
-
+                {/key}
+            </div>
+            <div class="mt-7 flex items-center justify-between gap-4 max-[639px]:items-start">
+                <p class="text-xs text-[#566171] [.dark_&]:text-[#abb5c3]" role="status" aria-live="polite">Showing {Math.min(visibleCount, filteredImages.length)} of {filteredImages.length} images</p>
+                {#if visibleCount < filteredImages.length}
+                    <button class="inline-flex min-h-11 items-center justify-center gap-[15px] rounded-[5px] border px-[18px] py-[11px] text-sm font-[550] transition-colors duration-150 motion-reduce:transition-none border-[#dde2e8] bg-white hover:border-[#566171] hover:bg-[#edf2f7] [.dark_&]:border-[#303947] [.dark_&]:bg-[#11151b] [.dark_&]:hover:border-[#abb5c3] [.dark_&]:hover:bg-[#222d3c] max-[639px]:text-xs" type="button" onclick={() => { visibleCount += 12; }}>Show more images</button>
+                {/if}
             </div>
         </div>
     </section>
 
-    <section class="px-4 pb-16 sm:px-6 lg:px-8">
-        <div class="mx-auto grid max-w-7xl gap-3 sm:grid-cols-3">
-            {#each highlights as highlight}
-                <div class="rounded-lg border border-neutral-200 bg-white/80 p-4 shadow-sm shadow-black/5 transition duration-500 hover:-translate-y-1 hover:border-red-300 dark:border-white/10 dark:bg-white/5 dark:hover:border-red-400/60">
-                    <p class="text-3xl font-black text-red-500">{highlight.stat}</p>
-                    <p class="mt-2 text-sm leading-6 text-neutral-600 dark:text-neutral-400">{highlight.label}</p>
-                </div>
+    <section class="mx-auto w-[calc(100%-36px)] min-[701px]:w-[min(1160px,calc(100%-64px))] py-[76px] max-[700px]:py-[50px] grid grid-cols-[1.15fr_1fr] gap-[90px] max-[1000px]:gap-10 max-[700px]:grid-cols-1 max-[700px]:gap-3" id="about" aria-labelledby="about-title">
+        <div>
+            <p class="mb-3 text-xs font-[650] tracking-widest text-[#244c77] uppercase [.dark_&]:text-[#a5c7ec]">About</p>
+            <h2 class="text-[clamp(28px,3vw,36px)] leading-[1.22] font-semibold tracking-[-0.03em]" id="about-title">An engineer who values<br class="max-[700px]:hidden" /> clarity and collaboration.</h2>
+            <div class="mt-[23px] space-y-[17px] text-[15px] leading-[1.85] text-[#566171] [.dark_&]:text-[#abb5c3]">
+                <p>I'm a Computer Engineering student at the University of Central Florida and a freelance software engineer. My work spans web development, systems integration, and technical troubleshooting for clients.</p>
+                <p>Before moving into engineering, I managed an after-school care team of five to ten staff members. That experience shaped how I communicate, support a team, and explain technical ideas clearly.</p>
+                <p>I enjoy understanding how things work, whether I'm developing an application, designing a circuit board, or repairing electronics.</p>
+            </div>
+        </div>
+        <div class="pt-[29px]" id="tools">
+            <h3 class="mb-[23px] text-[19px] font-semibold">Technical toolkit</h3>
+            {#each skills as skill}
+                <div class="border-t border-[#dde2e8] py-4 [.dark_&]:border-[#303947]"><h4 class="text-[13px] font-semibold">{skill.title}</h4><p class="mt-1.5 text-[13px] leading-[1.8] text-[#566171] [.dark_&]:text-[#abb5c3]">{skill.tools}</p></div>
+            {/each}
+        </div>
+        <div class="col-span-full -mt-11 grid grid-cols-4 gap-[18px] max-[1000px]:mt-0 max-[700px]:mt-3.5 max-[700px]:grid-cols-2">
+            {#each aboutImages as media}
+                <ImageCard {media} personal />
             {/each}
         </div>
     </section>
 
-    <section class="px-4 py-16 sm:px-6 lg:px-8" id="work">
-        <div class="mx-auto max-w-7xl">
-            <div class="max-w-3xl">
-                <p class="text-sm font-bold uppercase tracking-[0.3em] text-red-500">Selected Work</p>
-                <h2 class="mt-3 text-4xl font-black text-neutral-950 dark:text-white sm:text-5xl">
-                    Screenshots with range.
-                </h2>
-                <p class="mt-5 max-w-xl text-base leading-8 text-neutral-600 dark:text-neutral-400">
-                    A tighter first look at game systems, dashboards, PCB work, and client-facing interfaces. Tap any image to open it larger.
-                </p>
-            </div>
-
-            <div class="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-                {#each featuredWork as media}
-                    <button
-                        on:click="{()=> $lightboxMedia = media}"
-                        class="group relative cursor-pointer overflow-hidden rounded-lg border border-neutral-200 bg-white text-left shadow-lg shadow-black/5 transition duration-500 hover:-translate-y-2 hover:border-red-300 hover:shadow-2xl hover:shadow-red-500/10 dark:border-white/10 dark:bg-white/5 dark:hover:border-red-400/60"
-                    >
-                        <img
-                            src="{media.url}?width=1800&quality=100"
-                            alt="{media.alt}"
-                            class="aspect-video w-full object-cover transition duration-500 group-hover:scale-110"
-                        />
-
-                        <div class="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/80 to-transparent p-4 text-white opacity-0 transition duration-500 group-hover:opacity-100">
-                            <p class="text-sm font-bold">{media.alt}</p>
-                        </div>
-                    </button>
-                {/each}
-            </div>
+    <section class="mx-auto w-[calc(100%-36px)] min-[701px]:w-[min(1160px,calc(100%-64px))] flex items-center justify-between gap-9 border-t border-[#dde2e8] pt-[54px] pb-[65px] [.dark_&]:border-[#303947] max-[700px]:flex-col max-[700px]:items-start max-[700px]:gap-[25px] max-[700px]:py-10" id="contact" aria-labelledby="contact-title">
+        <div>
+            <p class="mb-3 text-xs font-[650] tracking-widest text-[#244c77] uppercase [.dark_&]:text-[#a5c7ec]">Contact</p>
+            <h2 class="text-[clamp(28px,3vw,36px)] leading-[1.22] font-semibold tracking-[-0.03em]" id="contact-title">Let's connect.</h2>
+            <p class="mt-[17px] text-sm leading-[1.8] text-[#566171] [.dark_&]:text-[#abb5c3]">Open to software and computer engineering roles.<br />I'd welcome a conversation about your team and the work you're building.</p>
         </div>
-    </section>
-
-    <section class="border-y border-neutral-200 bg-white px-4 py-16 transition-colors duration-500 dark:border-white/10 dark:bg-neutral-900/40 sm:px-6 lg:px-8">
-        <div class="mx-auto grid max-w-7xl gap-4 md:grid-cols-3">
-            {#each services as service}
-                <div class="group rounded-lg border border-neutral-200 bg-neutral-50 p-6 shadow-sm shadow-black/5 transition duration-500 hover:-translate-y-2 hover:border-neutral-300 hover:shadow-xl dark:border-white/10 dark:bg-neutral-950/70 dark:hover:border-white/25">
-                    <div class="h-1.5 w-20 rounded-full bg-linear-to-r {service.accent} transition-all duration-500 group-hover:w-32"></div>
-                    <h3 class="mt-6 text-2xl font-black text-neutral-950 dark:text-white">{service.title}</h3>
-                    <p class="mt-4 text-sm leading-7 text-neutral-600 dark:text-neutral-400">{service.text}</p>
-                </div>
-            {/each}
-        </div>
-    </section>
-
-    <section class="px-4 py-20 sm:px-6 lg:px-8" id="projects">
-        <div class="mx-auto max-w-7xl">
-            <div class="max-w-3xl">
-                <p class="text-sm font-bold uppercase tracking-[0.3em] text-cyan-600 dark:text-cyan-300">Projects</p>
-                <h2 class="mt-3 text-4xl font-black text-neutral-950 dark:text-white sm:text-5xl">
-                    Client work, experiments, and shipped ideas.
-                </h2>
-                <p class="mt-5 text-base leading-8 text-neutral-600 dark:text-neutral-400">
-                    Each project has a job: reduce friction, teach a skill, prove a workflow, or turn a weird idea into something people can actually use.
-                </p>
-            </div>
-
-            <div class="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-                {#each projects as project}
-                    <article class="group flex h-full flex-col rounded-lg border border-neutral-200 bg-white p-6 shadow-lg shadow-black/5 transition duration-500 hover:-translate-y-2 hover:border-red-300 hover:shadow-2xl hover:shadow-red-500/10 dark:border-white/10 dark:bg-white/5 dark:hover:border-red-400/60">
-                        <div class="flex items-start justify-between gap-4">
-                            <div>
-                                <h3 class="text-xl font-black text-neutral-950 dark:text-white">{project.title}</h3>
-                                <p class="mt-2 text-xs font-bold uppercase tracking-[0.16em] text-red-500">{project.tag}</p>
-                            </div>
-
-                            <span class="h-3 w-3 shrink-0 rounded-full bg-cyan-400 transition duration-500 group-hover:scale-150"></span>
-                        </div>
-
-                        <p class="mt-5 flex-1 text-sm leading-7 text-neutral-600 dark:text-neutral-400">{project.text}</p>
-
-                        <div class="mt-6 flex flex-wrap gap-2">
-                            {#if project.links.length}
-                                {#each project.links as link}
-                                    <a
-                                        href="{link.href}"
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        class="rounded-full border border-neutral-300 px-4 py-2 text-sm font-bold text-neutral-800 transition duration-500 hover:border-red-500 hover:bg-red-500 hover:text-white dark:border-white/15 dark:text-neutral-100 dark:hover:border-red-400 dark:hover:bg-red-500"
-                                    >
-                                        {link.label}
-                                    </a>
-                                {/each}
-                            {:else}
-                                <span class="rounded-full border border-neutral-300 bg-neutral-100 px-4 py-2 text-sm font-bold text-neutral-500 dark:border-white/10 dark:bg-white/5 dark:text-neutral-400">
-                                    {project.note}
-                                </span>
-                            {/if}
-                        </div>
-                    </article>
-                {/each}
-            </div>
-        </div>
-    </section>
-
-    <section class="border-y border-neutral-200 bg-neutral-100 px-4 py-20 transition-colors duration-500 dark:border-white/10 dark:bg-black/20 sm:px-6 lg:px-8" id="tools">
-        <div class="mx-auto max-w-7xl">
-            <div class="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-                <div>
-                    <p class="text-sm font-bold uppercase tracking-[0.3em] text-amber-600 dark:text-amber-300">Software & Tools</p>
-                    <h2 class="mt-3 text-4xl font-black text-neutral-950 dark:text-white sm:text-5xl">
-                        The workshop is broad on purpose.
-                    </h2>
-                    <p class="mt-5 text-base leading-8 text-neutral-600 dark:text-neutral-400">
-                        Web, VR, automation, embedded systems, design, and client operations all feed into the same goal: build the thing so it works in real life.
-                    </p>
-                </div>
-
-                <div class="flex flex-wrap gap-3 text-sm">
-                    {#each software as tool}
-                        <span class="rounded-full border border-neutral-200 bg-white px-4 py-2 font-semibold text-neutral-700 shadow-sm shadow-black/5 transition duration-500 hover:-translate-y-1 hover:border-cyan-400 hover:text-cyan-700 dark:border-white/10 dark:bg-white/5 dark:text-neutral-200 dark:hover:border-cyan-300 dark:hover:text-cyan-200">
-                            {tool}
-                        </span>
-                    {/each}
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="px-4 py-20 sm:px-6 lg:px-8">
-        <div class="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-            <div>
-                <p class="text-sm font-bold uppercase tracking-[0.3em] text-red-500">About</p>
-                <h2 class="mt-3 text-4xl font-black text-neutral-950 dark:text-white sm:text-5xl">
-                    Engineer brain, teacher patience, maker habits.
-                </h2>
-
-                <div class="mt-6 space-y-5 text-base leading-8 text-neutral-600 dark:text-neutral-400">
-                    <p>
-                        I'm a Computer Engineering student at the University of Central Florida, pursuing my degree since 2020. Through both academic work and hands-on experience, I've developed strong skills in software development, hardware integration, and problem-solving.
-                    </p>
-
-                    <p>
-                        Before transitioning fully into engineering, I worked as an after-school care manager where I led a team of five to ten staff members. That experience strengthened my leadership, communication, and teamwork abilities, qualities that continue to guide my approach to engineering projects today.
-                    </p>
-
-                    <p>
-                        As a freelance software engineer and IT professional, I've collaborated with multiple clients on both new and ongoing projects, providing solutions in web development, systems integration, and technical troubleshooting.
-                    </p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                {#each aboutPreview as media}
-                    <button
-                        on:click="{()=> $lightboxMedia = media}"
-                        class="group relative cursor-pointer overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-lg shadow-black/5 transition duration-500 hover:-translate-y-2 hover:border-cyan-300 dark:border-white/10 dark:bg-white/5 dark:hover:border-cyan-300/60"
-                    >
-                        <img
-                            src="{media.url}?width=1200&quality=90"
-                            alt="{media.alt}"
-                            class="aspect-4/3 w-full object-cover transition duration-500 group-hover:scale-110"
-                        />
-                    </button>
-                {/each}
-            </div>
-        </div>
-    </section>
-
-    <!-- <section class="grid m-auto grid-cols-1 max-w-[1600px] gap-4 px-4 pb-20 md:grid-cols-2 lg:grid-cols-4">
-        {#each aboutMe as media}
-            <button
-                on:click="{()=> $lightboxMedia = media}"
-                class="group relative cursor-pointer overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-lg shadow-black/5 transition duration-500 hover:-translate-y-2 hover:border-amber-300 dark:border-white/10 dark:bg-white/5 dark:hover:border-amber-300/60"
-            >
-                <img
-                    src="{media.url}?width=1800&quality=100"
-                    alt="{media.alt}"
-                    class="aspect-video w-full object-cover transition duration-500 group-hover:scale-110"
-                />
-            </button>
-        {/each}
-    </section> -->
-
-    <section class="px-4 pb-24 sm:px-6 lg:px-8" id="contact">
-        <div class="mx-auto max-w-5xl rounded-lg border border-neutral-200 bg-white p-8 text-center shadow-2xl shadow-black/10 transition-colors duration-500 dark:border-white/10 dark:bg-white/5 dark:shadow-black/30 sm:p-12">
-            <p class="text-sm font-bold uppercase tracking-[0.3em] text-cyan-600 dark:text-cyan-300">Contact</p>
-            <h2 class="mt-3 text-4xl font-black text-neutral-950 dark:text-white sm:text-5xl">
-                Let's build the useful version.
-            </h2>
-            <p class="mx-auto mt-5 max-w-2xl text-base leading-8 text-neutral-600 dark:text-neutral-400">
-                If you'd like to work together, need tutoring, or want a second brain on a technical problem, reach out and tell me what you're trying to make.
-            </p>
-
-            <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-                <a
-                    href="mailto:delayne.russell99@gmail.com"
-                    class="inline-flex items-center justify-center rounded-full bg-red-500 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-red-500/25 transition duration-500 hover:-translate-y-1 hover:bg-red-400"
-                >
-                    delayne.russell99@gmail.com
-                </a>
-
-                <a
-                    href="sms:7729407545"
-                    class="inline-flex items-center justify-center rounded-full border border-neutral-300 bg-white px-6 py-3 text-sm font-bold text-neutral-900 transition duration-500 hover:-translate-y-1 hover:border-cyan-400 hover:text-cyan-700 dark:border-white/15 dark:bg-white/5 dark:text-white dark:hover:border-cyan-300 dark:hover:text-cyan-200"
-                >
-                    772-940-7545
-                </a>
-            </div>
+        <div class="flex flex-col gap-4 text-sm">
+            <a class="flex min-h-[30px] items-center gap-[15px] text-sm font-[550] text-[#244c77] underline-offset-4 hover:underline [.dark_&]:text-[#a5c7ec]" href="mailto:delayne.russell99@gmail.com">delayne.russell99@gmail.com <span aria-hidden="true">↗</span></a>
+            <a class="flex min-h-[30px] items-center gap-[15px] underline-offset-[5px] hover:text-[#244c77] hover:underline [.dark_&]:hover:text-[#a5c7ec]" href="tel:+17729407545">772-940-7545</a>
         </div>
     </section>
 </main>
+
+<footer class="mx-auto w-[calc(100%-36px)] min-[701px]:w-[min(1160px,calc(100%-64px))] flex justify-between border-t border-[#dde2e8] py-[25px] text-xs text-[#566171] [.dark_&]:border-[#303947] [.dark_&]:text-[#abb5c3]"><p>© {new Date().getFullYear()} DeLayne Russell</p><a class="underline-offset-[5px] hover:text-[#244c77] hover:underline [.dark_&]:hover:text-[#a5c7ec]" href="https://github.com/Teesitin" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a></footer>

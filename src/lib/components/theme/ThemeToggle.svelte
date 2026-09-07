@@ -1,25 +1,16 @@
 <script lang="ts">
-	import { theme } from "./themeStore";
-
-	function toggleTheme() {
-		theme.update((currentTheme) => (currentTheme === 'light' ? 'dark' : 'light'));
-	}
+	import { theme } from './themeStore';
 </script>
 
-<button
-	class="fixed right-4 top-4 z-40 flex h-12 w-12 items-center justify-center rounded-full border border-neutral-200 bg-white/85 text-neutral-900 shadow-lg shadow-black/10 backdrop-blur-xl transition duration-500 hover:-translate-y-1 hover:scale-105 dark:border-white/10 dark:bg-neutral-950/80 dark:text-neutral-100"
-	on:click={toggleTheme}
-	aria-label={$theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
->
-	{#if $theme === 'light'}
-		<!-- Moon -->
-		<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 fill-current" viewBox="0 -960 960 960">
-			<path d="M484-80q-84 0-157.5-32t-128-86.5Q144-253 112-326.5T80-484q0-146 93-257.5T410-880q-18 99 11 193.5T521-521q71 71 165.5 100T880-410q-26 144-138 237T484-80Zm0-80q88 0 163-44t118-121q-86-8-163-43.5T464-465q-61-61-97-138t-43-163q-77 43-120.5 118.5T160-484q0 135 94.5 229.5T484-160Z"/>
-		</svg>
-	{:else}
-		<!-- Sun -->
-		<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 fill-current" viewBox="0 -960 960 960">
-			<path d="M440-760v-160h80v160h-80Zm266 110-55-55 112-115 56 57-113 113Zm54 210v-80h160v80H760ZM440-40v-160h80v160h-80ZM254-652 140-763l57-56 113 113-56 54Zm508 512L651-255l54-54 114 110-57 59ZM40-440v-80h160v80H40Zm157 300-56-57 112-112 29 27 29 28-114 114Zm283-100q-100 0-170-70t-70-170q0-100 70-170t170-70q100 0 170 70t70 170q0 100-70 170t-170 70Zm0-80q66 0 113-47t47-113q0-66-47-113t-113-47q-66 0-113 47t-47 113q0 66 47 113t113 47Zm0-160Z"/>
-		</svg>
-	{/if}
-</button>
+<div class="flex items-center gap-2 rounded-md border border-neutral-200 bg-white px-3 py-1.5 text-xs text-neutral-600 [.dark_&]:border-neutral-800 [.dark_&]:bg-neutral-950 [.dark_&]:text-neutral-300">
+	<label for="theme-preference">Theme</label>
+	<select
+		id="theme-preference"
+		bind:value={$theme}
+		class="min-h-7 cursor-pointer rounded bg-transparent pl-1 pr-1 text-xs font-medium text-neutral-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-500 [.dark_&]:text-neutral-100"
+	>
+		<option value="system">System</option>
+		<option value="light">Light</option>
+		<option value="dark">Dark</option>
+	</select>
+</div>

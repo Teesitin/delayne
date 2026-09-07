@@ -1,16 +1,23 @@
 <!doctype html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth scroll-pt-7 bg-white scheme-light [font-family:-apple-system,BlinkMacSystemFont,'Segoe_UI',sans-serif] motion-reduce:scroll-auto [&.dark]:bg-[#11151b] [&.dark]:scheme-dark">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<script>
-			try {
-				document.documentElement.classList.toggle('dark', localStorage.getItem('theme') === 'dark');
-			} catch {}
+			(() => {
+				let preference = 'system';
+				try {
+					const saved = localStorage.getItem('theme-preference');
+					if (saved === 'light' || saved === 'dark') preference = saved;
+				} catch {}
+				const dark = preference === 'dark' ||
+					(preference === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+				document.documentElement.classList.toggle('dark', dark);
+			})();
 		</script>
 		%sveltekit.head%
 	</head>
-	<body data-sveltekit-preload-data="hover" class="bg-white text-neutral-900 transition-colors duration-500 dark:bg-neutral-950 dark:text-neutral-100 [&_*]:transition-all [&_*]:duration-500">
+	<body data-sveltekit-preload-data="hover" class="bg-white text-[#17212f] antialiased selection:bg-[#cee0f2] selection:text-[#152a40] [.dark_&]:bg-[#11151b] [.dark_&]:text-[#eef1f5] **:focus-visible:outline-2 **:focus-visible:outline-offset-[5px] **:focus-visible:outline-[#244c77] [.dark_&]:**:focus-visible:outline-[#a5c7ec] [&_button]:cursor-pointer [&_button]:touch-manipulation [&_button:disabled]:cursor-default [&_a]:touch-manipulation">
 		<div class="contents">%sveltekit.body%</div>
 	</body>
 </html>
