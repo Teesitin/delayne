@@ -7,6 +7,13 @@ node_modules
 .wrangler
 /.svelte-kit
 /build
+/dist
+/coverage
+
+# Local media preparation, document exports, and agent workspace files
+/linkedin-media/
+/output/
+/.agents/
 
 # Temporary scripts, audits, and generated working files
 /tmp/
