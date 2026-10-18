@@ -10,7 +10,7 @@ node_modules
 /dist
 /coverage
 
-# Local media preparation, document exports, and agent workspace files
+# Local LinkedIn media/covers, generated exports, and agent workspace files
 /linkedin-media/
 /output/
 /.agents/
